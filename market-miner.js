@@ -7,6 +7,8 @@ var t = new twitter({
     access_token_secret: process.env.t_access_token_secret
 });
 
+var symbols = process.env.symbols;
+
 Array.prototype.contains = function (id) {
 	for (i in this) {
 		if (this[i] == id) return true;
@@ -18,20 +20,20 @@ function stream(){
 	t.stream(
 		'statuses/filter',
 		{
-			track: process.env.symbols
+			track: symbols
 		},
 		function(stream) {
 			var dotcount = 0;
 
 			console.log();
-			console.log("Tracking symbols '" + globals.symbols + "'.")
+			console.log("Tracking symbols '" + symbols + "'.")
 			process.stdout.write('Streaming...........\r');
 			process.stdout.write('Streaming');
 
 			stream.on('data', function(tweet){
 
-				for(var i=0;i<globals.symbols.length;i++){
-					var matched = globals.symbols[i];
+				for(var i=0;i<symbols.length;i++){
+					var matched = symbols[i];
 					if(tweet.text.indexOf(matched) != -1){
 						connection.query('INSERT INTO tweets (`id_str`, `handle`, `text`, `phrase`) VALUES (?, ?, ?, ?);', [tweet.id_str, tweet.user.screen_name, tweet.text, matched], function(err, results) {
 							if(err){
