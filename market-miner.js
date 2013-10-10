@@ -7,7 +7,7 @@ var t = new twitter({
     access_token_secret: process.env.t_access_token_secret
 });
 
-var symbols = process.env.symbols;
+var symbols = process.env.symbols.split(",");
 
 Array.prototype.contains = function (id) {
 	for (i in this) {
@@ -31,23 +31,23 @@ function stream(){
 			process.stdout.write('Streaming');
 
 			stream.on('data', function(tweet){
-
+				console.log("hey");
 				for(var i=0;i<symbols.length;i++){
 					var matched = symbols[i];
 					if(tweet.text.indexOf(matched) != -1){
-						connection.query('INSERT INTO tweets (`id_str`, `handle`, `text`, `phrase`) VALUES (?, ?, ?, ?);', [tweet.id_str, tweet.user.screen_name, tweet.text, matched], function(err, results) {
-							if(err){
-								console.log("lol" + err);
-							} else {
-								if(dotcount==10){
-									process.stdout.write('\rStreaming');
-									dotcount=0;
-								} else {
-									process.stdout.write(".");
-									dotcount+=1;
-								}
-							}
-						});
+						// connection.query('INSERT INTO tweets (`id_str`, `handle`, `text`, `phrase`) VALUES (?, ?, ?, ?);', [tweet.id_str, tweet.user.screen_name, tweet.text, matched], function(err, results) {
+						// 	if(err){
+						// 		console.log("lol" + err);
+						// 	} else {
+						// 		if(dotcount==10){
+						// 			process.stdout.write('\rStreaming');
+						// 			dotcount=0;
+						// 		} else {
+						// 			process.stdout.write(".");
+						// 			dotcount+=1;
+						// 		}
+						// 	}
+						// });
 					}
 				}
 
