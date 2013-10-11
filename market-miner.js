@@ -30,14 +30,15 @@ function stream(){
 			track: symbols
 		},
 		function(stream) {
-			var dotcount = 0;
-
 			console.log();
 			console.log("Tracking symbols " + symbols + ".")
-			process.stdout.write('Streaming...........\r');
-			process.stdout.write('Streaming');
+			console.log('Streaming...........');
 
 			stream.on('data', function(tweet){
+				//TODO SERIOUSLY...
+				//What if a tweet has multiple symbols matched? It will attempt to store the same tweet multiple times, but only the first will succeed due to unique id. Solutions?
+				//1) Store the tweet twice with a different "symbol" value. This is highly inefficient.
+				//2) A second table where a tweet's ID is set up against multiple symbols? Seems cooler, but harder.
 				for(var i=0;i<symbols.length;i++){
 					var matched = symbols[i];
 					if(tweet.text.indexOf(matched) != -1){
@@ -71,17 +72,9 @@ function stream(){
 							],
 							function(err, results) {
 								if(err){
-									console.log("lol" + err);
+									console.log("ERROR: " + err);
 								} else {
-									if(dotcount==10){
-										process.stdout.write('\rStreaming');
-										dotcount=0;
-									} else {
-										process.stdout.write(".");
-										dotcount+=1;
-									}
-
-									console.log("Stored tweet matching " + matched);
+									console.log("Stored a tweet.");
 								}
 							}
 						);
